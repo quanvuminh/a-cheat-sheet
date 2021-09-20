@@ -1,5 +1,7 @@
 -- Dump DB ---
 mysqldump --defaults-file=/etc/mysql/debian.cnf --routines --events --triggers ${DB} ${TABLE:}> ${DB}.${TABLE:}.${DATE}.sql
+--- Export the related part for a table from mysqldump's generate file
+sed -n -e '/DROP TABLE.*`${TABLE}`/,/UNLOCK TABLES/p' dump.sql > dump.${TABLE}.sql
 
 -- DDL ---
 /* with PT-ONLINE-SCHEMA-CHANGE
