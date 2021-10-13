@@ -33,3 +33,8 @@ WHERE
         TABLE_NAME = "${TABLE}"
 GROUP BY
     TABLE_NAME;
+
+--- Change collation
+ALTER DATABASE ${DB} CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE ${DB}.${TABLE} CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE ${DB}.${TABLE} MODIFY ${COLUMN} CHARACTER SET utf8 COLLATE utf8_unicode_ci default '' not null;
