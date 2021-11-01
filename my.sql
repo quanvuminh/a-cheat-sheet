@@ -4,6 +4,10 @@ mysqldump --defaults-file=/etc/mysql/debian.cnf --routines --events --triggers $
 sed -n -e '/DROP TABLE.*`${TABLE}`/,/UNLOCK TABLES/p' dump.sql > dump.${TABLE}.sql
 
 -- DDL ---
+
+--- RENAME TABLE ${TABLE} TO ${NEW_TABLE}
+ALTER TABLE ${TABLE} RENAME TO ${NEW_TABLE};
+
 /* with PT-ONLINE-SCHEMA-CHANGE
 https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html */
 --- For big tables: --max-load Threads_running=20000 --critical-load Threads_running=20000
@@ -38,3 +42,7 @@ GROUP BY
 ALTER DATABASE ${DB} CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ALTER TABLE ${DB}.${TABLE} CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ALTER TABLE ${DB}.${TABLE} MODIFY ${COLUMN} CHARACTER SET utf8 COLLATE utf8_unicode_ci default '' not null;
+
+--- KILL ---
+--- Kill all sleeping process from an user
+select group_concat(concat('KILL ',id,';') separator ' ') from information_schema.processlist where user='${USER}' and command = "Sleep";
