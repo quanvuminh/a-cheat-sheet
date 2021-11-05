@@ -1,5 +1,9 @@
 -- Dump DB ---
 mysqldump --defaults-file=/etc/mysql/debian.cnf --routines --events --triggers ${DB} ${TABLE:}> ${DB}.${TABLE:}.${DATE}.sql
+
+--- Schema only
+mysqldump --defaults-file=/etc/mysql/debian.cnf --no-data ${DB} ${TABLE:}> ${DB}.${TABLE:}.${DATE}.sql
+
 --- Export the related part for a table from mysqldump's generate file
 sed -n -e '/DROP TABLE.*`${TABLE}`/,/UNLOCK TABLES/p' dump.sql > dump.${TABLE}.sql
 
@@ -7,6 +11,9 @@ sed -n -e '/DROP TABLE.*`${TABLE}`/,/UNLOCK TABLES/p' dump.sql > dump.${TABLE}.s
 
 --- RENAME TABLE ${TABLE} TO ${NEW_TABLE}
 ALTER TABLE ${TABLE} RENAME TO ${NEW_TABLE};
+
+--- CREATE INDEX ${INDEX} on ${TABLE} (columnA, columnB, ...)
+ALTER TABLE ${TABLE} ADD INDEX ${INDEX} (columnA, columnB, ...)
 
 /* with PT-ONLINE-SCHEMA-CHANGE
 https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html */
