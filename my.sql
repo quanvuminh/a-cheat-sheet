@@ -15,6 +15,11 @@ ALTER TABLE ${TABLE} RENAME TO ${NEW_TABLE};
 --- CREATE INDEX ${INDEX} on ${TABLE} (columnA, columnB, ...)
 ALTER TABLE ${TABLE} ADD INDEX ${INDEX} (columnA, columnB, ...)
 
+--- Change collation
+ALTER DATABASE ${DB} CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE ${DB}.${TABLE} CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE ${DB}.${TABLE} MODIFY ${COLUMN} CHARACTER SET utf8 COLLATE utf8_unicode_ci default '' not null;
+
 /* with PT-ONLINE-SCHEMA-CHANGE
 https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html */
 --- For big tables: --max-load Threads_running=20000 --critical-load Threads_running=20000
@@ -45,10 +50,8 @@ WHERE
 GROUP BY
     TABLE_NAME;
 
---- Change collation
-ALTER DATABASE ${DB} CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-ALTER TABLE ${DB}.${TABLE} CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-ALTER TABLE ${DB}.${TABLE} MODIFY ${COLUMN} CHARACTER SET utf8 COLLATE utf8_unicode_ci default '' not null;
+--- Extract transaction log
+mysqlbinlog --short-form --start-datetime="2021-11-12 08:00:00" --stop-datetime="2021-11-12 11:01:00" --database=${DB} --table=${TABLE} /var/log/mysql/mariadb-bin.xyz >> ${DB}.${TABLE}.binlog
 
 --- KILL ---
 --- Kill all sleeping process from an user
