@@ -50,6 +50,17 @@ WHERE
 GROUP BY
     TABLE_NAME;
 
+SELECT
+    TABLE_NAME, TABLE_ROWS
+FROM
+    INFORMATION_SCHEMA.TABLES
+WHERE
+        TABLE_SCHEMA = '${DB}'
+    AND
+        TABLE_NAME = '${TABLE}'
+GROUP BY
+    TABLE_NAME;
+
 --- Extract transaction log
 mysqlbinlog --short-form --start-datetime="2021-11-12 08:00:00" --stop-datetime="2021-11-12 11:01:00" --database=${DB} --table=${TABLE} /var/log/mysql/mariadb-bin.xyz >> ${DB}.${TABLE}.binlog
 
