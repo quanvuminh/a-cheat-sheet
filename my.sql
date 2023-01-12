@@ -44,20 +44,19 @@ SELECT
 FROM
     information_schema.TABLES
 WHERE
-        TABLE_SCHEMA = "${DB}"
-    AND
-        TABLE_NAME = "${TABLE}"
+    TABLE_SCHEMA = "${DB}"
+    AND TABLE_NAME = "${TABLE}"
 GROUP BY
     TABLE_NAME;
 
 SELECT
-    TABLE_NAME, TABLE_ROWS
+    TABLE_NAME,
+    TABLE_ROWS
 FROM
     INFORMATION_SCHEMA.TABLES
 WHERE
-        TABLE_SCHEMA = '${DB}'
-    AND
-        TABLE_NAME = '${TABLE}'
+    TABLE_SCHEMA = '${DB}'
+    AND TABLE_NAME = '${TABLE}'
 GROUP BY
     TABLE_NAME;
 
