@@ -66,3 +66,8 @@ mysqlbinlog --short-form --start-datetime="2021-11-12 08:00:00" --stop-datetime=
 --- KILL ---
 --- Kill all sleeping process from an user
 select group_concat(concat('KILL ',id,';') separator ' ') from information_schema.processlist where user='${USER}' and command = "Sleep";
+
+--- Proxysql
+select SessionID from stats_mysql_processlist where user = '$1' and command = 'Sleep';
+mysql  --silent --raw --skip-column-names -e "select SessionID from stats_mysql_processlist where user = 'notification_service' and command = 'Sleep';"
+KILL CONNECTION ${SessionID}
