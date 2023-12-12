@@ -1,5 +1,5 @@
-$(kustomize build ./ | kubectl get -o jsonpath='{.items[0].metadata.annotations.kustomize\.itim\.vn\/checksum}' -f -)
-kustomize edit add annotation kustomize.itim.vn/checksum:$(kustomize build ./ | sha256sum | awk '{print $1}') --force
+kustomize edit ser annotation kustomize.itim.vn/checksum:$(kustomize build ./ | sha256sum | awk '{print $1}')
+kustomize edit set annotation kustomize.itim.vn/checksum:$(kustomize build ./ | kubectl get -o jsonpath='{.items[0].metadata.annotations.kustomize\.itim\.vn\/checksum}' -f -)
 
 kustomize edit set image $(kustomize build ./ | kubectl get -o jsonpath='{range .items[*]}{range .spec.template.spec.containers[*]}{.image}{"\n"}{end}{end}' -f - | sort | uniq | grep -E -v 'admins|official')
 
